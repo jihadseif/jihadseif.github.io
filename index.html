@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jihad Seif</title>
+<meta name="description" content="Jihad Seif: Blue Team and AI security graduate, researcher in ML-driven intrusion prevention for IoT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<meta property="og:title" content="Jihad Seif">
+<meta property="og:description" content="Blue Team and AI security graduate. ML-driven intrusion prevention for IoT.">
+<meta property="og:image" content="https://jihadseif-design.github.io/assets/headshot.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='8,2 24,2 31,16 24,30 8,30 1,16' fill='%231d4ed8'/%3E%3Ctext x='16' y='21' font-size='12' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EJS%3C/text%3E%3C/svg%3E">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* Layout: sticky left rail (identity + nav) beside one reading column; stacks on phones.
+   Idea: a defender's case file. Photos sit in chamfered frames with reticle corner brackets;
+   SLAI-IPS gets a clickable layer simulator that mirrors the real SOC dashboard. */
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --ink:#0f1b26; --muted:#566370; --line:#d6dce2;
+  --accent:#1d4ed8; --accent-soft:#e3eafc;
+  --signal:#b45309; --signal-soft:#fbefdc;
+  --danger:#c2283b; --danger-soft:#fbe4e7;
+  --ok:#0f766e; --ok-soft:#dcf3ef;
+  --violet:#6d3fd6; --violet-soft:#ece5fb;
+  --shade:rgba(15,27,38,.72);
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --s-1:.8125rem; --s0:1rem; --s1:1.125rem; --s2:1.5rem; --s3:2.25rem; --s4:clamp(2.4rem,5.6vw,4rem);
+  --cut:18px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1218; --surface:#121b24; --ink:#e4eaf0; --muted:#93a1ae; --line:#24313d;
+  --accent:#86a8ff; --accent-soft:#1a2a4a; --signal:#f0b464; --signal-soft:#3a2a12;
+  --danger:#ff7a8a; --danger-soft:#3d1820; --ok:#5fd0c2; --ok-soft:#123430; --violet:#b597ff; --violet-soft:#2a1f47;
+  --shade:rgba(4,8,12,.85); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1218; --surface:#121b24; --ink:#e4eaf0; --muted:#93a1ae; --line:#24313d;
+  --accent:#86a8ff; --accent-soft:#1a2a4a; --signal:#f0b464; --signal-soft:#3a2a12;
+  --danger:#ff7a8a; --danger-soft:#3d1820; --ok:#5fd0c2; --ok-soft:#123430; --violet:#b597ff; --violet-soft:#2a1f47;
+  --shade:rgba(4,8,12,.85); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:var(--s0);line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+button{font:inherit;color:inherit}
+.mono{font-family:var(--f-mono)}
+
+.wrap{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;padding-block:44px 80px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:28px;padding-block:20px 56px}}
+
+/* ---------- rail ---------- */
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 40px);align-self:start;display:flex;flex-direction:column;gap:22px}
+@media (max-width:900px){.rail{position:static}}
+.brand{display:flex;gap:12px;align-items:center}
+.mark{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1.5px solid var(--accent);color:var(--accent);
+  clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:var(--accent-soft);font-family:var(--f-display);font-weight:800;font-size:.85rem}
+.brand .name{font-family:var(--f-display);font-size:1.25rem;font-weight:800;font-stretch:112%;line-height:1.1}
+.brand .role{color:var(--muted);font-size:.75rem;font-family:var(--f-mono)}
+.nav{display:flex;flex-direction:column;gap:1px;font-size:.9rem;border-left:1px solid var(--line)}
+.nav a{color:var(--muted);text-decoration:none;padding:5px 0 5px 14px;margin-left:-1px;border-left:2px solid transparent;transition:color .2s,border-color .2s}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:var(--ink);border-left-color:var(--accent)}
+@media (max-width:900px){.nav{flex-direction:row;flex-wrap:wrap;gap:4px 14px;border:0}.nav a{padding:2px 0;border:0}}
+.side-links{display:flex;flex-direction:column;gap:8px;font-size:var(--s-1)}
+.chip-btn{font-size:.72rem;font-family:var(--f-mono);border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:6px;padding:3px 9px;cursor:pointer;align-self:flex-start}
+.chip-btn:hover{color:var(--ink);border-color:var(--muted)}
+.li{display:inline-flex;gap:8px;align-items:center;text-decoration:none;font-weight:500}
+.li svg{width:16px;height:16px;flex:none}
+
+/* ---------- photo frame: chamfered image + reticle brackets ---------- */
+.frame{position:relative;padding:9px;display:block;cursor:zoom-in;border:0;background:none;width:100%;text-align:left}
+.frame::before{content:"";position:absolute;inset:0;pointer-events:none;transition:inset .35s cubic-bezier(.2,.8,.2,1);
+  --c:var(--accent);
+  background:
+    linear-gradient(var(--c),var(--c)) top left/24px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) top left/2px 24px no-repeat,
+    linear-gradient(var(--c),var(--c)) top right/24px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) top right/2px 24px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom left/24px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom left/2px 24px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom right/24px 2px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom right/2px 24px no-repeat}
+.frame:hover::before,.frame:focus-visible::before{inset:-6px}
+.frame .shot{position:relative;overflow:hidden;clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));background:var(--line)}
+.frame img{display:block;width:100%;height:auto;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1),filter .4s}
+.frame:hover img{transform:scale(1.035)}
+.frame .tagline-chip{position:absolute;left:20px;bottom:20px;z-index:2;font-family:var(--f-mono);font-size:.7rem;background:var(--shade);color:#fff;padding:4px 10px;border-radius:999px;display:flex;gap:6px;align-items:center;backdrop-filter:blur(4px)}
+.dot{width:7px;height:7px;border-radius:50%;background:#3ddc97;box-shadow:0 0 0 0 rgba(61,220,151,.6);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}70%{box-shadow:0 0 0 8px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
+.scan::after{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;pointer-events:none;
+  background:linear-gradient(to bottom,transparent,rgba(134,168,255,.22),transparent);animation:scan 6s ease-in-out infinite}
+@keyframes scan{0%,15%{top:-30%}60%,100%{top:110%}}
+figcaption{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);padding:8px 9px 0}
+
+/* ---------- main ---------- */
+main{display:flex;flex-direction:column;gap:84px;min-width:0}
+section{display:flex;flex-direction:column;gap:24px;scroll-margin-top:24px}
+.eyebrow{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+h2{font-size:var(--s3);font-weight:750;font-stretch:108%}
+.sub{color:var(--muted);max-width:62ch}
+
+/* hero */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:40px;align-items:center}
+@media (max-width:760px){.hero{grid-template-columns:minmax(0,1fr);gap:24px}.hero .portrait{order:-1;max-width:300px}}
+#net{position:absolute;inset:-40px -20px;width:calc(100% + 40px);height:calc(100% + 80px);z-index:-1;pointer-events:none;opacity:.55;max-width:none}
+.hero-text{display:flex;flex-direction:column;gap:22px;min-width:0}
+.mode{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface);align-self:flex-start;flex-wrap:wrap}
+.mode button{font-size:.85rem;border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
+.mode button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.hero h1{font-size:var(--s4);font-weight:800;font-stretch:116%;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:var(--s1);color:var(--muted);max-width:60ch}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:500;border:1px solid var(--line);color:var(--ink);background:var(--surface);transition:transform .2s,border-color .2s;cursor:pointer}
+.btn:hover{border-color:var(--ink);transform:translateY(-1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.portrait .shot{aspect-ratio:4/5}
+.portrait img{height:100%;position:absolute;inset:0}
+.portrait img.alt{opacity:0;transition:opacity .5s}
+[data-mode="research"] .portrait img.alt{opacity:1}
+.ticker{display:flex;gap:28px;font-family:var(--f-mono);font-size:.78rem;color:var(--muted);flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.ticker b{display:block;font-family:var(--f-display);font-size:1.5rem;color:var(--ink);font-weight:700;font-stretch:110%;font-variant-numeric:tabular-nums}
+
+/* SLAI-IPS */
+.feature{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:26px}
+@media (max-width:560px){.feature{padding:18px}}
+.feature h3{font-size:var(--s2);font-weight:750;font-stretch:105%}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-family:var(--f-mono);font-size:.72rem;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.pill.amber{background:var(--signal-soft);color:var(--signal)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+
+.sim{border:1px solid var(--line);border-radius:12px;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.sim-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.sim-head b{color:var(--ink);font-weight:500}
+.attacks{display:flex;flex-wrap:wrap;gap:6px;padding:14px 16px 4px}
+.attack{font-size:.8rem;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;transition:border-color .2s,background .2s}
+.attack:hover{border-color:var(--ink)}
+.attack i{width:8px;height:8px;border-radius:50%;background:var(--danger);display:inline-block}
+.attack.clean i{background:var(--ok)}
+.attack[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lanes{overflow-x:auto;padding:14px 16px 6px}
+.lane{display:grid;grid-template-columns:repeat(7,minmax(92px,1fr));gap:8px;min-width:700px;position:relative}
+.layer{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--surface);display:flex;flex-direction:column;gap:3px;cursor:pointer;text-align:left;transition:border-color .25s,background .25s,transform .25s;position:relative}
+.layer:hover{border-color:var(--muted)}
+.layer .id{font-family:var(--f-mono);font-size:.68rem;color:var(--muted)}
+.layer b{font-family:var(--f-display);font-stretch:104%;font-size:.88rem;line-height:1.2}
+.layer .st{font-family:var(--f-mono);font-size:.66rem;color:var(--muted);min-height:1em}
+.layer.sel{border-color:var(--accent)}
+.layer.pass{border-color:var(--ok);background:var(--ok-soft)}
+.layer.pass .st{color:var(--ok)}
+.layer.block{border-color:var(--danger);background:var(--danger-soft);transform:translateY(-2px)}
+.layer.block .st{color:var(--danger)}
+.layer.dest{border-style:dashed}
+.layer.dest.pass{border-style:solid}
+.layer.active{border-color:var(--accent);background:var(--accent-soft)}
+.track{height:3px;background:var(--line);border-radius:3px;margin-top:10px;min-width:700px;overflow:hidden}
+.track span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s linear}
+.track span.bad{background:var(--danger)}
+.track span.good{background:var(--ok)}
+.sim-info{padding:10px 16px 14px;font-size:.92rem;color:var(--muted);min-height:3.2em}
+.sim-info b{color:var(--ink)}
+.feed{border-top:1px solid var(--line);max-height:186px;overflow-y:auto;font-size:.82rem}
+.feed .row{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line);animation:in .4s ease-out}
+@keyframes in{from{background:var(--accent-soft)}to{background:transparent}}
+.feed .t{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.feed .tag{font-family:var(--f-mono);font-size:.68rem;padding:2px 7px;border-radius:5px;border:1px solid currentColor;white-space:nowrap}
+.feed .empty{padding:12px 16px;color:var(--muted)}
+@media (max-width:520px){.feed .row{grid-template-columns:minmax(0,1fr) auto}.feed .t{display:none}}
+.c-violet{color:var(--violet)} .c-danger{color:var(--danger)} .c-amber{color:var(--signal)} .c-ok{color:var(--ok)} .c-accent{color:var(--accent)}
+.disclaim{font-family:var(--f-mono);font-size:.68rem;color:var(--muted);padding:0 16px 12px}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.metric{border-top:2px solid var(--ink);padding-top:10px}
+.metric .v{font-family:var(--f-mono);font-size:var(--s2);font-variant-numeric:tabular-nums}
+.metric .k{font-size:var(--s-1);color:var(--muted)}
+
+.dash{display:flex;flex-direction:column;gap:10px}
+.dash-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.browser{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0d1319;cursor:zoom-in;padding:0;display:block;width:100%}
+.browser .bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#18212b;font-family:var(--f-mono);font-size:.68rem;color:#93a1ae}
+.browser .bar i{width:9px;height:9px;border-radius:50%;background:#3a4653;display:inline-block}
+.browser .bar span{margin-left:8px}
+.browser img{display:block;width:100%;height:auto}
+.feature ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+.note{font-size:var(--s-1);color:var(--muted);border-left:2px solid var(--signal);padding-left:12px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:8px;transition:transform .25s,border-color .25s}
+.card:hover{transform:translateY(-3px);border-color:var(--muted)}
+.card.dashed{border-style:dashed;background:transparent}
+.card h3{font-size:var(--s1);font-weight:700}
+.card p{color:var(--muted);font-size:.92rem}
+.card .pills{margin-top:auto;padding-top:8px}
+
+/* timeline */
+.tl{position:relative;display:flex;flex-direction:column;gap:6px;padding-left:28px}
+.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.job{position:relative;padding:16px 18px;border-radius:12px;border:1px solid transparent;transition:background .25s,border-color .25s}
+.job::before{content:"";position:absolute;left:-28px;top:24px;width:14px;height:14px;border-radius:4px;transform:rotate(45deg);background:var(--bg);border:2px solid var(--muted);transition:border-color .25s,background .25s}
+.job:hover{background:var(--surface);border-color:var(--line)}
+.job:hover::before{border-color:var(--accent);background:var(--accent)}
+.job.now::before{border-color:var(--ok)}
+.when{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.job h3{font-size:var(--s1);font-weight:700;margin-top:2px}
+.org{color:var(--muted);font-size:.92rem;margin:2px 0 8px}
+.job ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:5px;font-size:.95rem}
+.awards{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.award{display:flex;gap:10px;align-items:baseline;font-size:.95rem}
+.award::before{content:"";width:8px;height:8px;flex:none;border-radius:2px;background:var(--signal);transform:translateY(-1px) rotate(45deg)}
+
+/* publication */
+.pub{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.pub::after{content:"76";position:absolute;right:16px;top:-10px;font-family:var(--f-display);font-weight:800;font-stretch:125%;font-size:7rem;color:var(--accent-soft);z-index:0;line-height:1}
+.pub > *{position:relative;z-index:1}
+.pub .venue{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);letter-spacing:.03em;max-width:70ch}
+.pub h3{font-size:1.2rem;font-weight:650;font-family:var(--f-body);line-height:1.4;max-width:46ch}
+.steps{display:flex;flex-wrap:wrap;gap:0;font-family:var(--f-mono);font-size:.74rem}
+.steps span{padding:6px 12px 6px 18px;background:var(--bg);border:1px solid var(--line);margin-right:-1px;position:relative}
+.steps span.done{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+.steps span.prog{background:var(--signal-soft);color:var(--signal);border-color:var(--signal)}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:18px;align-items:start}
+.gallery figure{margin:0}
+.gallery figure:nth-child(2){margin-top:48px}
+.gallery figure:nth-child(3){margin-top:16px}
+@media (max-width:760px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.gallery figure:nth-child(n){margin-top:0}.gallery figure:first-child{grid-column:1/-1}}
+.gallery .shot{aspect-ratio:3/4}
+.gallery figure:first-child .shot{aspect-ratio:4/5}
+.gallery img{height:100%;position:absolute;inset:0}
+
+/* credentials */
+.creds{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.cred{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;text-align:left;cursor:zoom-in;padding:0;transition:transform .3s,border-color .3s,box-shadow .3s}
+.cred:hover{transform:translateY(-4px) rotate(-.4deg);border-color:var(--muted);box-shadow:0 14px 30px -18px rgba(15,27,38,.45)}
+.cred img{width:100%;height:auto;aspect-ratio:1.38;object-fit:cover;object-position:top;display:block;border-bottom:1px solid var(--line);background:#fff}
+.cred div{padding:14px 16px;display:flex;flex-direction:column;gap:3px}
+.cred b{font-weight:600;font-size:.95rem;line-height:1.35}
+.cred span{font-size:var(--s-1);color:var(--muted)}
+
+/* skills */
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button{font-size:.8rem;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cloud{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-size:.86rem;border:1px solid var(--line);border-radius:6px;padding:3px 9px;background:var(--surface);transition:opacity .3s,transform .3s,border-color .3s}
+.tag.dim{opacity:.22}
+.tag.hit{border-color:var(--accent);color:var(--accent)}
+
+.extras{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.extra{display:flex;flex-direction:column;gap:4px;font-size:.95rem;padding-top:12px;border-top:1px solid var(--line)}
+.extra span:last-child{color:var(--muted)}
+
+.contact-band{background:var(--ink);color:var(--bg);border-radius:16px;padding:32px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.contact-band h2{font-size:var(--s2);color:var(--bg)}
+.contact-band p{opacity:.75;margin-top:6px}
+.contact-band .btn{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+
+footer{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:50;background:var(--shade);display:grid;place-items:center;
+  padding:max(20px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb[hidden]{display:none}
+.lb figure{margin:0;max-width:min(1100px,100%);display:flex;flex-direction:column;gap:10px}
+.lb img{max-height:80vh;width:auto;max-width:100%;border-radius:10px;margin:0 auto;display:block}
+.lb figcaption{color:#e4eaf0;text-align:center;font-size:.8rem}
+.lb .x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:calc(16px + env(safe-area-inset-right,0px));background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-mono);font-size:.8rem}
+
+[data-mode="work"] .only-research,[data-mode="research"] .only-work{display:none}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" data-mode="work">
+  <aside class="rail">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">JS</div>
+      <div><div class="name">Jihad Seif</div><div class="role">Nottingham, UK</div></div>
+    </div>
+    <nav class="nav" aria-label="Sections" id="nav">
+      <a href="#slai-ips">SLAI-IPS</a>
+      <a href="#experience">Experience</a>
+      <a href="#publications">Publications</a>
+      <a href="#moments">Moments</a>
+      <a href="#education">Education</a>
+      <a href="#credentials">Credentials</a>
+      <a href="#skills">Skills</a>
+    </nav>
+    <div class="side-links">
+      <a class="li" href="https://linkedin.com/in/jihadseif" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4v11H3zM9.5 9.5h3.8v1.6h.06c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.77 2.5 4.77 5.76v5.59h-4v-4.96c0-1.18-.02-2.7-1.7-2.7-1.7 0-1.96 1.28-1.96 2.61v5.05h-4z"/></svg>
+        linkedin.com/in/jihadseif</a>
+      <a class="li" href="https://github.com/jihadseif-design" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+        github.com/jihadseif-design</a>
+    </div>
+    <button class="chip-btn" id="theme-toggle" type="button">theme: system</button>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <canvas id="net" aria-hidden="true"></canvas>
+      <div class="hero-text">
+        <div class="mode" role="group" aria-label="View profile as">
+          <button type="button" id="mode-work" aria-pressed="true">Industry</button>
+          <button type="button" id="mode-research" aria-pressed="false">Research &amp; PhD</button>
+        </div>
+        <h1 id="hero-title" class="only-work">I watch the alerts, and I build <em>the systems that raise them.</em></h1>
+        <h1 class="only-research">Making AI-driven detection <em>hold up under attack.</em></h1>
+        <p class="lede only-work">First Class Cyber Security graduate from Nottingham Trent University with hands-on SOC experience from an 11-week Blue Team internship at Cyber50 Defense. I work across Wazuh, Shuffle SOAR, TheHive, Snort, Suricata and Wireshark, from alert triage to incident investigation and threat-intelligence reporting. Open to SOC Analyst, Blue Team, AI Security and Cyber Threat Intelligence roles.</p>
+        <p class="lede only-research">My research applies machine learning to intrusion prevention, anomaly detection and evaluation on imbalanced network data. I built SLAI-IPS for MQTT smart-home networks and presented it at ICACIn’26 in Birmingham. I am looking for doctoral research on robust evaluation of AI security systems, particularly detection under adversarial conditions.</p>
+        <div class="cta">
+          <a class="btn primary" href="#slai-ips">Try the SLAI-IPS demo</a>
+          <a class="btn only-work" href="#experience">SOC experience</a>
+          <a class="btn only-research" href="#publications">Publications</a>
+          <a class="btn" href="https://linkedin.com/in/jihadseif" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+        <div class="ticker">
+          <div><b>1st</b>Class Honours</div>
+          <div><b>2</b>CS department prizes</div>
+          <div><b>11</b>weeks in a SOC</div>
+          <div><b>1</b>conference talk</div>
+        </div>
+      </div>
+      <button class="frame portrait" type="button" data-full="assets/headshot.jpg" data-cap="Jihad Seif" aria-label="Open portrait">
+        <div class="shot scan">
+          <img src="assets/headshot.jpg" alt="Portrait of Jihad Seif" width="480" height="480" style="object-position:center 30%">
+          <img class="alt" src="assets/icacin26.jpg" alt="" width="1076" height="1280" style="object-position:30% 20%">
+          <span class="tagline-chip"><span class="dot"></span><span class="only-work">open to SOC &amp; security roles</span><span class="only-research">open to PhD positions</span></span>
+        </div>
+      </button>
+    </section>
+
+    <!-- SLAI-IPS -->
+    <section id="slai-ips" aria-labelledby="slai-title">
+      <div class="eyebrow">Flagship project</div>
+      <article class="feature">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <h3 id="slai-title">SLAI-IPS</h3>
+          <p class="sub">Seven-Layer AI-Driven Intrusion Prevention System for secure MQTT-based smart-home IoT networks. Final-year research project at Nottingham Trent University, 2025–2026.</p>
+          <div class="pills">
+            <span class="pill amber">Department Project Prize 2025/26</span>
+            <span class="pill">Exceptional First</span>
+            <span class="pill ok">Presented at ICACIn’26</span>
+          </div>
+        </div>
+
+        <!-- simulator -->
+        <div class="sim" id="sim">
+          <div class="sim-head"><span><b>Send a message through the layers</b> · pick one</span><span id="sim-count">0 sent · 0 blocked</span></div>
+          <div class="attacks" role="group" aria-label="Choose traffic to send" id="attacks"></div>
+          <div class="lanes">
+            <div class="lane" id="lane"></div>
+            <div class="track"><span id="bar"></span></div>
+          </div>
+          <p class="sim-info" id="info" aria-live="polite">Each layer can stop a message before it reaches the broker. Click a layer to read what it checks, or send some traffic.</p>
+          <div class="feed" id="feed"><div class="empty">Alert feed is empty. Send something.</div></div>
+          <p class="disclaim">Interactive illustration based on the SLAI-IPS dashboard. Not live data.</p>
+        </div>
+
+        <div class="metrics" id="metrics">
+          <div class="metric"><div class="v" data-count="0.7436" data-dec="4">0.7436</div><div class="k">Binary F1, Random Forest (held-out)</div></div>
+          <div class="metric"><div class="v" data-count="0.7302" data-dec="4">0.7302</div><div class="k">Binary accuracy, Random Forest</div></div>
+          <div class="metric"><div class="v" data-count="0.6301" data-dec="4">0.6301</div><div class="k">Multiclass F1, XGBoost (best)</div></div>
+          <div class="metric"><div class="v">70 / 30</div><div class="k">Stratified train–test split</div></div>
+        </div>
+
+        <div class="dash">
+          <div class="dash-tabs" role="group" aria-label="Dashboard view">
+            <button class="attack" type="button" aria-pressed="true" data-shot="0">Overview</button>
+            <button class="attack" type="button" aria-pressed="false" data-shot="1">Alerts &amp; trust scores</button>
+          </div>
+          <button class="browser" type="button" id="dash-btn" aria-label="Open dashboard screenshot">
+            <div class="bar"><i></i><i></i><i></i><span>SOC dashboard · Flask</span></div>
+            <img id="dash-img" src="assets/soc-dashboard.jpg" alt="SLAI-IPS SOC dashboard showing messages processed, blocks by security layer and ML attack breakdown" width="1898" height="870" loading="lazy">
+          </button>
+        </div>
+
+        <ul>
+          <li>Python pipeline on the MQTT-IoT-IDS2020 dataset comparing Random Forest, Decision Tree and XGBoost for binary and multiclass attack classification.</li>
+          <li>Leakage-safe evaluation: stratified split, SMOTE on training data only, an untouched test partition, and cross-validation.</li>
+          <li>Built on Mosquitto, Node-RED and Flask, and tested live against SSH brute-force, network scanning and MQTT brute-force attacks.</li>
+        </ul>
+        <p class="note">I re-ran the evaluation after finding that resampling before the split inflated earlier scores. The figures above are the corrected held-out results.</p>
+      </article>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Nomos security research</h3>
+          <p>Threat modelling and control design for a multi-tenant platform that connects enterprise AI agents to voice and WhatsApp, including Arabic–English code-switching.</p>
+          <div class="pills"><span class="pill">prompt injection</span><span class="pill">tenant isolation</span></div>
+        </div>
+        <a class="card" href="https://github.com/jihadseif-design/smote-leakage-ids" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+          <h3>SMOTE leakage in IDS evaluation ↗</h3>
+          <p>Oversampling before the split turns a 0.52 macro-F1 model into a “0.98” one. A reproducible experiment on the mistake I fixed in SLAI-IPS.</p>
+          <div class="pills"><span class="pill">Python</span><span class="pill">imbalanced-learn</span><span class="pill ok">GitHub</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" aria-labelledby="exp-title">
+      <div class="eyebrow">Experience</div>
+      <h2 id="exp-title">Where I’ve worked</h2>
+      <div class="tl">
+        <article class="job now">
+          <div class="when">Oct 2026 → now</div>
+          <h3>Cybersecurity Research Contributor</h3>
+          <div class="org">Nomos · Conversation Lab</div>
+          <ul>
+            <li>Research and propose controls for tenant isolation, encryption, secrets management, regional data handling, retention, auditability and least-privilege access.</li>
+            <li>Design safeguards for human handoff and confirmation of sensitive actions by AI agents.</li>
+            <li>Write threat scenarios and test requirements for appointment and transactional flows: prompt injection, premature or incorrect actions, duplicate API calls, cross-tenant leakage and third-party speech-provider risk.</li>
+          </ul>
+        </article>
+        <article class="job">
+          <div class="when">17 Jun → 28 Aug 2026</div>
+          <h3>Blue Team Intern (SOC)</h3>
+          <div class="org">Cyber50 Defense · Remote · 11-week programme</div>
+          <ul>
+            <li>Monitored and triaged Wazuh SIEM alerts from an onboarded Windows endpoint; investigated logs and escalated in line with SOC playbooks.</li>
+            <li>Deployed Shuffle SOAR in Docker and TheHive for automated response and incident case management.</li>
+            <li>Analysed traffic with Snort, Suricata and Wireshark; ran vulnerability assessments with Nmap, Kali Linux and Metasploit and recommended hardening.</li>
+            <li>Mapped attacker behaviour to MITRE ATT&amp;CK, applied NIST incident response and PCI DSS controls, and wrote a capstone investigation report and CTI reports.</li>
+          </ul>
+        </article>
+        <article class="job now">
+          <div class="when">Jan 2023 → now</div>
+          <h3>IT and Digital Coordinator</h3>
+          <div class="org">Seif for General Trading</div>
+          <ul>
+            <li>Coordinate IT, cybersecurity and digital operations for an international trading business.</li>
+            <li>Put in place data protection, secure communications and access controls; deliver security-awareness training.</li>
+          </ul>
+        </article>
+        <article class="job">
+          <div class="when">17 Jun → 9 Aug 2024</div>
+          <h3>IT Department Intern (virtual)</h3>
+          <div class="org">HypaiQ Limited · Virtual Internships Programme</div>
+          <ul>
+            <li>160 hours in an international remote team, working on backend, frontend and UI/UX design for a group technical deliverable presented to the host company.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section id="publications" aria-labelledby="pub-title">
+      <div class="eyebrow">Publications &amp; talks</div>
+      <h2 id="pub-title">Research output</h2>
+      <article class="pub">
+        <div class="venue">ICACIn’26 · 5th International Conference on Advanced Computing and Informatics · Birmingham City University · 10–11 Sep 2026</div>
+        <h3>A Seven-Layer AI-Driven Intrusion Prevention System for Secure MQTT-Based Smart Home IoT Networks</h3>
+        <p style="color:var(--muted)">J. Seif · Paper 76 · In-person oral presentation</p>
+        <div class="steps" aria-label="Publication status">
+          <span class="done">✓ Accepted</span>
+          <span class="done">✓ Presented, Sep 2026</span>
+          <span class="prog">Springer LNDECT · in progress</span>
+          <span class="prog">IEEE Access extension · in preparation</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- MOMENTS -->
+    <section id="moments" aria-labelledby="mom-title">
+      <div class="eyebrow">Moments</div>
+      <h2 id="mom-title">On the record</h2>
+      <div class="gallery">
+        <figure>
+          <button class="frame" type="button" data-full="assets/icacin26.jpg" data-cap="Presenting SLAI-IPS · ICACIn’26, Birmingham · Sep 2026">
+            <div class="shot"><img src="assets/icacin26.jpg" alt="Jihad Seif presenting SLAI-IPS at the ICACIn'26 podium" width="1076" height="1280" loading="lazy" style="object-position:35% 30%"></div>
+          </button>
+          <figcaption>ICACIn’26 · Birmingham · Sep 2026</figcaption>
+        </figure>
+        <figure>
+          <button class="frame" type="button" data-full="assets/graduation.jpg" data-cap="Graduation · Nottingham Trent University · 2026">
+            <div class="shot"><img src="assets/graduation.jpg" alt="Jihad Seif in graduation gown outside Nottingham Trent University" width="720" height="1280" loading="lazy" style="object-position:center 40%"></div>
+          </button>
+          <figcaption>Graduation · NTU · 2026</figcaption>
+        </figure>
+        <figure>
+          <button class="frame" type="button" data-full="assets/blackhat-europe-2025.jpg" data-cap="Black Hat Europe · London · Dec 2025">
+            <div class="shot"><img src="assets/blackhat-europe-2025.jpg" alt="Jihad Seif at Black Hat Europe 2025 in London" width="800" height="1196" loading="lazy" style="object-position:center 25%"></div>
+          </button>
+          <figcaption>Black Hat Europe · London · Dec 2025</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education" aria-labelledby="edu-title">
+      <div class="eyebrow">Education</div>
+      <h2 id="edu-title">Education and awards</h2>
+      <div class="tl">
+        <article class="job">
+          <div class="when">2024 → 2026</div>
+          <h3>BSc (Hons) Cyber Security · First Class Honours</h3>
+          <div class="org">Nottingham Trent University</div>
+          <div class="awards">
+            <div class="award">Exceptional First in the final-year project</div>
+            <div class="award">Department of Computer Science Project Prize, 2025/26</div>
+            <div class="award">Department of Computer Science Prize for Outstanding Performance, 2025/26</div>
+          </div>
+          <p class="org" style="margin-top:10px">Modules: Advanced Topics in Cyber Security · Internet of Things · Digital Investigations · Security in Practice · Information Security · Advanced Networking</p>
+        </article>
+        <article class="job">
+          <div class="when">2023 → 2024</div>
+          <h3>International Year One Computing · Distinction</h3>
+          <div class="org">Nottingham Trent International College · Python, Mathematics for Computing, Software Design, Networking</div>
+        </article>
+        <article class="job">
+          <div class="when">before 2023</div>
+          <h3>Undergraduate study in Cyber Security · GPA 3.96 / 4.00</h3>
+          <div class="org">Al Ain University, Abu Dhabi · Calculus, Linear Algebra, Java; transferred to the UK</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CREDENTIALS -->
+    <section id="credentials" aria-labelledby="cred-title">
+      <div class="eyebrow">Credentials</div>
+      <h2 id="cred-title">Certificates</h2>
+      <div class="creds">
+        <button class="cred" type="button" data-full="assets/cert-sc900.jpg" data-cap="Microsoft Certified: Security, Compliance, and Identity Fundamentals · verify.certiport.com · LTz2-s4YM">
+          <img src="assets/cert-sc900.jpg" alt="Microsoft Certified: Security, Compliance, and Identity Fundamentals certificate" loading="lazy" width="747" height="577">
+          <div><b>Microsoft Certified: Security, Compliance, and Identity Fundamentals (SC-900)</b><span>Issued 12 Sep 2025 · Certiport code LTz2-s4YM</span></div>
+        </button>
+        <button class="cred" type="button" data-full="assets/cert-cyber50.jpg" data-cap="Blue Team Internship Programme · Cyber50 Defense">
+          <img src="assets/cert-cyber50.jpg" alt="Cyber50 Defense Blue Team Internship Programme certificate" loading="lazy" width="900" height="631">
+          <div><b>Blue Team Internship Programme (11 weeks)</b><span>Cyber50 Defense · 17 Jun – 28 Aug 2026</span></div>
+        </button>
+        <button class="cred" type="button" data-full="assets/cert-hypaiq.jpg" data-cap="Virtual Internships Program · HypaiQ Limited · 160 hours">
+          <img src="assets/cert-hypaiq.jpg" alt="Virtual Internships certificate of completion for 160 hours at HypaiQ Limited" loading="lazy" width="1022" height="787">
+          <div><b>Virtual Internship, 160 hours</b><span>HypaiQ Limited · 17 Jun – 9 Aug 2024</span></div>
+        </button>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" aria-labelledby="skills-title">
+      <div class="eyebrow">Toolkit</div>
+      <h2 id="skills-title">Skills</h2>
+      <div class="filters" role="group" aria-label="Filter skills" id="filters">
+        <button type="button" aria-pressed="true" data-f="all">All</button>
+        <button type="button" aria-pressed="false" data-f="soc">Security operations</button>
+        <button type="button" aria-pressed="false" data-f="ai">AI &amp; app security</button>
+        <button type="button" aria-pressed="false" data-f="ml">ML &amp; data</button>
+        <button type="button" aria-pressed="false" data-f="code">Programming</button>
+        <button type="button" aria-pressed="false" data-f="iot">IoT &amp; systems</button>
+      </div>
+      <div class="cloud" id="cloud"></div>
+    </section>
+
+    <!-- MORE -->
+    <section id="more" aria-labelledby="more-title">
+      <div class="eyebrow">Beyond the CV</div>
+      <h2 id="more-title">Conferences and community</h2>
+      <div class="extras">
+        <div class="extra"><span class="when">Dec 2025</span><b>Black Hat Europe, London</b><span>Threat intelligence, detection and AI security with researchers and vendors.</span></div>
+        <div class="extra"><span class="when">2026</span><b>IPS partnership proposal</b><span>Pitched the IPS concept to a UAE company CEO for telecom and smart-home applications.</span></div>
+        <div class="extra"><span class="when">2023–2024</span><b>World Government Summit Tolerance Incubator</b><span>Delegate, Abu Dhabi.</span></div>
+        <div class="extra"><span class="when">2023</span><b>Cyber Wales Tech Week, Cardiff</b><span>Met cyber-range industry representatives.</span></div>
+        <div class="extra"><span class="when">Memberships</span><b>APM · Royal Statistical Society</b><span>Association for Project Management; Royal Statistical Society.</span></div>
+        <div class="extra"><span class="when">Languages</span><b>Arabic · English · French</b><span>Native · fluent · conversational.</span></div>
+      </div>
+    </section>
+
+    <div class="contact-band">
+      <div><h2>Let’s talk</h2><p>Roles, PhD supervision or collaboration: message me on LinkedIn.</p></div>
+      <a class="btn" href="https://linkedin.com/in/jihadseif" target="_blank" rel="noopener">Connect on LinkedIn ↗</a>
+    </div>
+
+    <footer><span>© 2026 Jihad Seif</span><span>Nottingham, UK</span></footer>
+  </main>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="x" type="button" id="lb-x">close ✕</button>
+  <figure><img id="lb-img" alt=""><figcaption id="lb-cap"></figcaption></figure>
+</div>
+
+<script>
+(function(){
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var app=document.getElementById('app');
+
+  /* ---- mode toggle ---- */
+  var bw=document.getElementById('mode-work'), br=document.getElementById('mode-research');
+  function setMode(m){
+    app.setAttribute('data-mode',m);
+    bw.setAttribute('aria-pressed',m==='work'); br.setAttribute('aria-pressed',m==='research');
+    try{localStorage.setItem('js-mode',m)}catch(e){}
+  }
+  bw.onclick=function(){setMode('work')}; br.onclick=function(){setMode('research')};
+  var start='work';
+  if(location.hash==='#phd') start='research'; else { try{start=localStorage.getItem('js-mode')||'work'}catch(e){} }
+  setMode(start);
+
+  /* ---- theme ---- */
+  var tb=document.getElementById('theme-toggle'), order=['system','light','dark'], t='system';
+  try{t=localStorage.getItem('js-theme')||'system'}catch(e){}
+  function applyTheme(){
+    if(t==='system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t);
+    tb.textContent='theme: '+t;
+  }
+  tb.onclick=function(){t=order[(order.indexOf(t)+1)%3];try{localStorage.setItem('js-theme',t)}catch(e){}applyTheme()};
+  applyTheme();
+
+  /* ---- lightbox ---- */
+  var lb=document.getElementById('lb'), lbi=document.getElementById('lb-img'), lbc=document.getElementById('lb-cap'), last=null;
+  function openLb(src,cap){last=document.activeElement;lbi.src=src;lbi.alt=cap||'';lbc.textContent=cap||'';lb.hidden=false;document.getElementById('lb-x').focus()}
+  function closeLb(){lb.hidden=true;if(last)last.focus()}
+  document.querySelectorAll('[data-full]').forEach(function(el){el.addEventListener('click',function(){openLb(el.dataset.full,el.dataset.cap)})});
+  document.getElementById('lb-x').onclick=closeLb;
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLb()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)closeLb()});
+
+  /* ---- dashboard tabs ---- */
+  var shots=[
+    {src:'assets/soc-dashboard.jpg',alt:'SLAI-IPS SOC dashboard overview: blocks by security layer and ML attack breakdown',w:1898,h:870},
+    {src:'assets/soc-alerts.jpg',alt:'SLAI-IPS live alert feed, device trust scores, banned devices and event timeline',w:1858,h:542}];
+  var di=document.getElementById('dash-img'), cur=0;
+  document.querySelectorAll('[data-shot]').forEach(function(b){
+    b.onclick=function(){
+      cur=+b.dataset.shot; var s=shots[cur];
+      di.src=s.src; di.alt=s.alt; di.width=s.w; di.height=s.h;
+      document.querySelectorAll('[data-shot]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+    };
+  });
+  document.getElementById('dash-btn').onclick=function(){openLb(shots[cur].src,shots[cur].alt)};
+
+  /* ---- layer simulator ---- */
+  var layers=[
+    {id:'L0',name:'Blacklist',d:'Drops every message from a device that has already been banned.'},
+    {id:'L0H',name:'Honeypot',d:'A decoy device that should never send. Any message from it means compromise and triggers an instant ban.'},
+    {id:'L1',name:'Token validator',d:'Rejects messages that do not carry the device’s valid token. Three blocks and the device is auto-banned.'},
+    {id:'L2',name:'Rate limiter',d:'Caps each device at 5 messages in 5 seconds to stop floods and DoS attempts.'},
+    {id:'L3',name:'Z-score',d:'Flags readings that sit far outside a device’s normal statistical range.'},
+    {id:'ML',name:'ML inference',d:'Random Forest and XGBoost models trained on MQTT-IoT-IDS2020 classify traffic as normal or as an attack type.'},
+    {id:'→',name:'MQTT broker',d:'Clean messages reach Mosquitto and the smart-home flows in Node-RED.',dest:true}];
+  var scenarios=[
+    {k:'clean',label:'Normal reading',dev:'door-sensor-01',stop:-1,msg:'door-sensor-01: delivered to broker, clean traffic',tag:'CLEAN',c:'c-ok'},
+    {k:'token',label:'Forged token',dev:'thermostat-01',stop:2,msg:'thermostat-01: invalid token for thermostat-01',tag:'L1-TokenValidator',c:'c-danger'},
+    {k:'flood',label:'Message flood',dev:'thermostat-01',stop:3,msg:'thermostat-01: rate limit exceeded, 5 messages in 5s (max 5), possible DoS',tag:'L2-RateLimiter',c:'c-amber'},
+    {k:'honey',label:'Touch the honeypot',dev:'honeypot-device-01',stop:1,msg:'honeypot-device-01: HONEYPOT TRIGGERED, device should never send messages',tag:'L0H-Honeypot',c:'c-violet'},
+    {k:'banned',label:'Banned device',dev:'thermostat-01',stop:0,msg:'thermostat-01: device is banned, auto-banned after 3 blocks',tag:'L0-Blacklist',c:'c-violet'},
+    {k:'anom',label:'Impossible reading',dev:'motion-sensor-01',stop:4,msg:'motion-sensor-01: Z-score anomaly, reading far outside baseline',tag:'L3-ZScore',c:'c-amber'},
+    {k:'scan',label:'UDP scan',dev:'ip-camera-01',stop:5,msg:'ip-camera-01: ML classified traffic as scan_sU (UDP scan)',tag:'ML-Detect',c:'c-danger'},
+    {k:'sparta',label:'SSH brute force',dev:'ip-camera-01',stop:5,msg:'ip-camera-01: ML classified traffic as sparta (SSH brute force)',tag:'ML-Detect',c:'c-danger'}];
+  var lane=document.getElementById('lane'), info=document.getElementById('info'), feed=document.getElementById('feed'),
+      bar=document.getElementById('bar'), atk=document.getElementById('attacks'), cnt=document.getElementById('sim-count');
+  var els=layers.map(function(L,i){
+    var b=document.createElement('button'); b.type='button'; b.className='layer'+(L.dest?' dest':'');
+    b.innerHTML='<span class="id">'+L.id+'</span><b>'+L.name+'</b><span class="st"></span>';
+    b.onclick=function(){els.forEach(function(e){e.classList.remove('sel')});b.classList.add('sel');info.innerHTML='<b>'+L.id+' · '+L.name+'.</b> '+L.d};
+    lane.appendChild(b); return b;
+  });
+  var sent=0, blocked=0, busy=false, timer=null;
+  scenarios.forEach(function(s){
+    var b=document.createElement('button'); b.type='button'; b.className='attack'+(s.k==='clean'?' clean':''); b.setAttribute('aria-pressed','false');
+    b.innerHTML='<i></i>'+s.label; b.onclick=function(){run(s,b)}; atk.appendChild(b);
+  });
+  function stamp(){var d=new Date();return [d.getHours(),d.getMinutes(),d.getSeconds()].map(function(n){return String(n).padStart(2,'0')}).join(':')}
+  function log(s){
+    var e=feed.querySelector('.empty'); if(e) e.remove();
+    var r=document.createElement('div'); r.className='row';
+    r.innerHTML='<span class="t">'+stamp()+'</span><span></span><span class="tag '+s.c+'"></span>';
+    r.children[1].textContent=s.msg; r.children[2].textContent=s.tag;
+    feed.prepend(r);
+  }
+  function run(s,btn){
+    if(timer) clearTimeout(timer);
+    atk.querySelectorAll('.attack').forEach(function(x){x.setAttribute('aria-pressed',x===btn)});
+    els.forEach(function(e){e.classList.remove('pass','block','active','sel');e.querySelector('.st').textContent=''});
+    bar.className=''; bar.style.width='0';
+    var end=s.stop<0?layers.length-1:s.stop, i=0, step=reduce?0:300;
+    info.innerHTML='Sending from <b>'+s.dev+'</b>…';
+    function tick(){
+      if(i>0){var p=els[i-1];p.classList.remove('active');p.classList.add('pass');p.querySelector('.st').textContent=layers[i-1].dest?'delivered':'passed'}
+      bar.style.width=((i+1)/layers.length*100)+'%';
+      if(i===end){
+        var e=els[i];
+        if(s.stop<0){e.classList.add('pass');e.querySelector('.st').textContent='delivered';bar.className='good';info.innerHTML='<b>Delivered.</b> All six layers passed '+s.dev+'. Clean traffic reaches the broker.'}
+        else{e.classList.add('block');e.querySelector('.st').textContent='BLOCKED';bar.className='bad';blocked++;
+          info.innerHTML='<b>Blocked at '+layers[i].id+' · '+layers[i].name+'.</b> '+layers[i].d}
+        sent++; cnt.textContent=sent+' sent · '+blocked+' blocked'; log(s); timer=null; return;
+      }
+      els[i].classList.add('active'); i++; timer=setTimeout(tick,step);
+    }
+    tick();
+  }
+
+  /* ---- skills ---- */
+  var skills={soc:['Wazuh SIEM','Shuffle SOAR','TheHive','Snort','Suricata','Wireshark','Nmap','Kali Linux','Metasploit','iptables','MITRE ATT&CK','NIST incident response','PCI DSS','Alert triage','Incident investigation','CTI reporting'],
+    ai:['Threat modelling','Prompt-injection testing','Multi-tenant isolation','Least privilege','Secure action confirmation','Audit logging','REST API security','Provider-risk assessment'],
+    ml:['scikit-learn','XGBoost','pandas','NumPy','imbalanced-learn','Anomaly detection','SMOTE','Cross-validation','Precision / recall / F1'],
+    code:['Python','Java','SQL','Bash','JavaScript','HTML/CSS','Git','LaTeX'],
+    iot:['MQTT','Node-RED','Eclipse Mosquitto','Flask','Docker','VMware','TLS / X.509','Linux','Windows Server']};
+  var cloud=document.getElementById('cloud');
+  Object.keys(skills).forEach(function(g){skills[g].forEach(function(s){var t=document.createElement('span');t.className='tag';t.dataset.g=g;t.textContent=s;cloud.appendChild(t)})});
+  document.querySelectorAll('#filters button').forEach(function(b){
+    b.onclick=function(){
+      var f=b.dataset.f;
+      document.querySelectorAll('#filters button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+      cloud.querySelectorAll('.tag').forEach(function(t){t.classList.toggle('dim',f!=='all'&&t.dataset.g!==f);t.classList.toggle('hit',f!=='all'&&t.dataset.g===f)});
+    };
+  });
+
+  /* ---- count-up metrics (final values already in the HTML) ---- */
+  if(!reduce && 'IntersectionObserver' in window){
+    var done=false, io=new IntersectionObserver(function(en){
+      if(done||!en[0].isIntersecting) return; done=true; io.disconnect();
+      document.querySelectorAll('[data-count]').forEach(function(el){
+        var to=+el.dataset.count, dec=+el.dataset.dec, t0=performance.now();
+        (function f(now){var p=Math.min(1,(now-t0)/1100), e=1-Math.pow(1-p,3); el.textContent=(to*e).toFixed(dec); if(p<1) requestAnimationFrame(f)})(t0);
+      });
+    },{threshold:.6});
+    io.observe(document.getElementById('metrics'));
+  }
+
+  /* ---- nav highlight ---- */
+  var links=[].slice.call(document.querySelectorAll('#nav a'));
+  if('IntersectionObserver' in window){
+    var so=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-30% 0px -60% 0px'});
+    links.forEach(function(a){var s=document.querySelector(a.getAttribute('href')); if(s) so.observe(s)});
+  }
+
+  /* ---- hero network canvas (IoT mesh) ---- */
+  var cv=document.getElementById('net'), ctx=cv.getContext('2d'), pts=[], W=0, H=0, raf=null, vis=true;
+  function size(){var r=cv.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0);
+    var n=Math.round(Math.min(46,W*H/14000));pts=[];for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,a:Math.random()<.12})}
+  function draw(){
+    var cs=getComputedStyle(document.documentElement), ac=cs.getPropertyValue('--accent').trim(), dg=cs.getPropertyValue('--signal').trim();
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){var p=pts[i];
+      if(!reduce){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1}
+      for(var j=i+1;j<pts.length;j++){var q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=dx*dx+dy*dy;
+        if(d<12000){ctx.globalAlpha=(1-d/12000)*.35;ctx.strokeStyle=ac;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}}
+    }
+    for(var k=0;k<pts.length;k++){var o=pts[k];ctx.globalAlpha=o.a?.9:.55;ctx.fillStyle=o.a?dg:ac;ctx.beginPath();ctx.arc(o.x,o.y,o.a?3:2,0,7);ctx.fill()}
+    ctx.globalAlpha=1;
+    if(!reduce&&vis) raf=requestAnimationFrame(draw);
+  }
+  size(); draw();
+  window.addEventListener('resize',function(){size();if(reduce)draw()});
+  if('IntersectionObserver' in window){new IntersectionObserver(function(e){vis=e[0].isIntersecting;if(vis&&!reduce){cancelAnimationFrame(raf);draw()}}).observe(cv)}
+})();
+</script>
+
+</body>
+</html>
